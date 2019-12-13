@@ -56,7 +56,7 @@ int main(void)
 	
 	
 	while (1) 
-    {
+	{
 		LED_OFF;
 		_delay_loop_2(delay);
 		
@@ -75,6 +75,7 @@ int main(void)
 		 
 		 else 
 		 { 
+			 // fade-out
 			 if (--delay <= 1) 
 			 {
 				 dir = 1;

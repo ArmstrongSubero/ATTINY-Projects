@@ -83,7 +83,7 @@ int main(void)
 	uint16_t delay = 1;
   38:	81 e0       	ldi	r24, 0x01	; 1
   3a:	90 e0       	ldi	r25, 0x00	; 0
-    {
+	{
 		LED_OFF;
 		_delay_loop_2(delay);
 		
@@ -91,11 +91,11 @@ int main(void)
 		_delay_loop_2(DELAY_MAX-delay);
   3c:	40 e0       	ldi	r20, 0x00	; 0
   3e:	52 e0       	ldi	r21, 0x02	; 2
-			 
 		 } 
 		 
 		 else 
 		 { 
+			 // fade-out
 			 if (--delay <= 1) 
   40:	61 e0       	ldi	r22, 0x01	; 1
   42:	30 e0       	ldi	r19, 0x00	; 0
@@ -103,7 +103,7 @@ int main(void)
 	
 	
 	while (1) 
-    {
+	{
 		LED_OFF;
   44:	d8 98       	cbi	0x1b, 0	; 27
     milliseconds can be achieved.
@@ -141,11 +141,11 @@ _delay_loop_2(uint16_t __count)
 				dir = 0;
   66:	23 2f       	mov	r18, r19
   68:	ed cf       	rjmp	.-38     	; 0x44 <__SREG__+0x5>
-			 
 		 } 
 		 
 		 else 
 		 { 
+			 // fade-out
 			 if (--delay <= 1) 
   6a:	01 97       	sbiw	r24, 0x01	; 1
   6c:	26 2f       	mov	r18, r22
