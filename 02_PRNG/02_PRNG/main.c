@@ -10,6 +10,7 @@
  *
  *  @hardware An Attiny84A has an LED connected via a 1k resistor to PA0
  *
+ *  @modified Based on example provided by Lukasz Podkalicki for ATTINY 13A
  *  @par
  *  COPYRIGHT NOTICE: 
  *  (c) 2020 Armstrong Subero. All rights reserved. This software is placed in the
