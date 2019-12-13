@@ -5,9 +5,9 @@
  *  @Compiler (AVR GCC 4.9.2, AtmelStudio 7)
  *  @version  1.0
  *
- *  @brief    Uses the overflow of Timer0 to toggle an LED every second
+ *  @brief    Generates a tone on a Piezo Speaker
  *
- *  @hardware An Attiny84A has an LED connected via a 1k resistor to PA0
+ *  @hardware An Attiny84A has an Piezo Speaker connected via a 1k resistor to PB0
  *
  *  @par
  *  COPYRIGHT NOTICE: 
@@ -25,9 +25,10 @@
 // define CPU clock frequency 
 #define F_CPU 1000000UL
 
-#define LED_ON		PORTA |= (1<<PORTA0);
-#define LED_OFF		PORTA &= ~(1<<PORTA0);
-#define LED_TOGGLE	PINA |=(1<<PINA0);
+// pin for buzzer
+#define BUZZER_ON		PORTB |= (1<<PORTB0);
+#define BUZZER_OFF		PORTB &= ~(1<<PORTB0);
+#define BUZZER_TOGGLE	PINB |=(1<<PINB0);
 
 /**
   Section: Included Files
@@ -35,28 +36,16 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include <avr/interrupt.h>
+#include <avr/pgmspace.h>
+#include <util/delay.h>
 
-
-/**
-  Section: Global Variables
-*/
-volatile uint8_t count = 0;
-
-
-/*!
- *
- * @brief Timer0 ISR toggles an LED ever 4 seconds
- *
- */
-ISR(TIM0_OVF_vect)
+void play_alarm()
 {
-	count++;
-	
-	// toggle every second 0.25s * 4
-	if(count == 4)
+	for (uint8_t i=0; i<10; i++)
 	{
-		LED_TOGGLE;
-		count = 0;
+		//play x notes inside song array
+		BUZZER_TOGGLE;
+		_delay_us(1200);
 	}
 }
 
@@ -67,22 +56,16 @@ ISR(TIM0_OVF_vect)
  *
  */
 int main(void)
-{
-	// set PA0 output pin
-	DDRA |= (1<<DDA0);
-	
-	// set prescaler to 1024 (CLK=1000000Hz/1024/256= 3.8Hz, 0.25s)
-	TCCR0B |= _BV(CS02)|_BV(CS00); 
-	
-	// enable Timer Overflow interrupt
-	TIMSK0 |= _BV(TOIE0); 
-	
-	// enable global interrupts
-	sei(); 
+{	
+	DDRB  = 0b00000001; // set BUZZER pin as OUTPUT
+	PORTB = 0b00000000; // set all pins to LOW
+
 	
 	while (1) 
     {
-		// Do nothing
+		// play beep
+		play_alarm();
+		_delay_ms(1000);
     }
 }  /* main() */
 
