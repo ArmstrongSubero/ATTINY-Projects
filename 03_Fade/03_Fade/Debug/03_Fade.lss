@@ -1,0 +1,162 @@
+
+03_Fade.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000007c  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000000d0  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000000d0  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000100  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  0000013c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000520  00000000  00000000  0000015c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000004a0  00000000  00000000  0000067c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   00000260  00000000  00000000  00000b1c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  00000d7c  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000002cb  00000000  00000000  00000da0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000007f  00000000  00000000  0000106b  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  000010ea  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
+   2:	17 c0       	rjmp	.+46     	; 0x32 <__bad_interrupt>
+   4:	16 c0       	rjmp	.+44     	; 0x32 <__bad_interrupt>
+   6:	15 c0       	rjmp	.+42     	; 0x32 <__bad_interrupt>
+   8:	14 c0       	rjmp	.+40     	; 0x32 <__bad_interrupt>
+   a:	13 c0       	rjmp	.+38     	; 0x32 <__bad_interrupt>
+   c:	12 c0       	rjmp	.+36     	; 0x32 <__bad_interrupt>
+   e:	11 c0       	rjmp	.+34     	; 0x32 <__bad_interrupt>
+  10:	10 c0       	rjmp	.+32     	; 0x32 <__bad_interrupt>
+  12:	0f c0       	rjmp	.+30     	; 0x32 <__bad_interrupt>
+  14:	0e c0       	rjmp	.+28     	; 0x32 <__bad_interrupt>
+  16:	0d c0       	rjmp	.+26     	; 0x32 <__bad_interrupt>
+  18:	0c c0       	rjmp	.+24     	; 0x32 <__bad_interrupt>
+  1a:	0b c0       	rjmp	.+22     	; 0x32 <__bad_interrupt>
+  1c:	0a c0       	rjmp	.+20     	; 0x32 <__bad_interrupt>
+  1e:	09 c0       	rjmp	.+18     	; 0x32 <__bad_interrupt>
+  20:	08 c0       	rjmp	.+16     	; 0x32 <__bad_interrupt>
+
+00000022 <__ctors_end>:
+  22:	11 24       	eor	r1, r1
+  24:	1f be       	out	0x3f, r1	; 63
+  26:	cf e5       	ldi	r28, 0x5F	; 95
+  28:	d2 e0       	ldi	r29, 0x02	; 2
+  2a:	de bf       	out	0x3e, r29	; 62
+  2c:	cd bf       	out	0x3d, r28	; 61
+  2e:	02 d0       	rcall	.+4      	; 0x34 <main>
+  30:	23 c0       	rjmp	.+70     	; 0x78 <_exit>
+
+00000032 <__bad_interrupt>:
+  32:	e6 cf       	rjmp	.-52     	; 0x0 <__vectors>
+
+00000034 <main>:
+ *
+ */
+int main(void)
+{
+	// set PA0 output pin
+	DDRA |= (1<<DDA0);
+  34:	d0 9a       	sbi	0x1a, 0	; 26
+	
+	// variables for fading
+	uint16_t delay = 1;
+	uint8_t dir = 0;
+  36:	20 e0       	ldi	r18, 0x00	; 0
+{
+	// set PA0 output pin
+	DDRA |= (1<<DDA0);
+	
+	// variables for fading
+	uint16_t delay = 1;
+  38:	81 e0       	ldi	r24, 0x01	; 1
+  3a:	90 e0       	ldi	r25, 0x00	; 0
+    {
+		LED_OFF;
+		_delay_loop_2(delay);
+		
+		LED_ON;
+		_delay_loop_2(DELAY_MAX-delay);
+  3c:	40 e0       	ldi	r20, 0x00	; 0
+  3e:	52 e0       	ldi	r21, 0x02	; 2
+			 
+		 } 
+		 
+		 else 
+		 { 
+			 if (--delay <= 1) 
+  40:	61 e0       	ldi	r22, 0x01	; 1
+  42:	30 e0       	ldi	r19, 0x00	; 0
+	uint8_t dir = 0;
+	
+	
+	while (1) 
+    {
+		LED_OFF;
+  44:	d8 98       	cbi	0x1b, 0	; 27
+    milliseconds can be achieved.
+ */
+void
+_delay_loop_2(uint16_t __count)
+{
+	__asm__ volatile (
+  46:	fc 01       	movw	r30, r24
+  48:	31 97       	sbiw	r30, 0x01	; 1
+  4a:	f1 f7       	brne	.-4      	; 0x48 <__SREG__+0x9>
+		_delay_loop_2(delay);
+		
+		LED_ON;
+  4c:	d8 9a       	sbi	0x1b, 0	; 27
+		_delay_loop_2(DELAY_MAX-delay);
+  4e:	fa 01       	movw	r30, r20
+  50:	e8 1b       	sub	r30, r24
+  52:	f9 0b       	sbc	r31, r25
+  54:	31 97       	sbiw	r30, 0x01	; 1
+  56:	f1 f7       	brne	.-4      	; 0x54 <__SREG__+0x15>
+		
+		 if (dir)
+  58:	22 23       	and	r18, r18
+  5a:	39 f0       	breq	.+14     	; 0x6a <__SREG__+0x2b>
+		 {   
+			// fade-in
+			if (++delay >= (DELAY_MAX - 1)) 
+  5c:	01 96       	adiw	r24, 0x01	; 1
+  5e:	8f 3f       	cpi	r24, 0xFF	; 255
+  60:	71 e0       	ldi	r23, 0x01	; 1
+  62:	97 07       	cpc	r25, r23
+  64:	78 f3       	brcs	.-34     	; 0x44 <__SREG__+0x5>
+			{
+				dir = 0;
+  66:	23 2f       	mov	r18, r19
+  68:	ed cf       	rjmp	.-38     	; 0x44 <__SREG__+0x5>
+			 
+		 } 
+		 
+		 else 
+		 { 
+			 if (--delay <= 1) 
+  6a:	01 97       	sbiw	r24, 0x01	; 1
+  6c:	26 2f       	mov	r18, r22
+  6e:	82 30       	cpi	r24, 0x02	; 2
+  70:	91 05       	cpc	r25, r1
+  72:	40 f3       	brcs	.-48     	; 0x44 <__SREG__+0x5>
+  74:	23 2f       	mov	r18, r19
+  76:	e6 cf       	rjmp	.-52     	; 0x44 <__SREG__+0x5>
+
+00000078 <_exit>:
+  78:	f8 94       	cli
+
+0000007a <__stop_program>:
+  7a:	ff cf       	rjmp	.-2      	; 0x7a <__stop_program>
