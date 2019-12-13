@@ -1,0 +1,177 @@
+
+06_Sleep.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000aa  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000000fe  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000000fe  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000130  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000028  00000000  00000000  0000016c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000057c  00000000  00000000  00000194  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000004c4  00000000  00000000  00000710  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000027a  00000000  00000000  00000bd4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000050  00000000  00000000  00000e50  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    000002fe  00000000  00000000  00000ea0  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    00000056  00000000  00000000  0000119e  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000018  00000000  00000000  000011f4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
+   2:	17 c0       	rjmp	.+46     	; 0x32 <__bad_interrupt>
+   4:	16 c0       	rjmp	.+44     	; 0x32 <__bad_interrupt>
+   6:	16 c0       	rjmp	.+44     	; 0x34 <__vector_3>
+   8:	14 c0       	rjmp	.+40     	; 0x32 <__bad_interrupt>
+   a:	13 c0       	rjmp	.+38     	; 0x32 <__bad_interrupt>
+   c:	12 c0       	rjmp	.+36     	; 0x32 <__bad_interrupt>
+   e:	11 c0       	rjmp	.+34     	; 0x32 <__bad_interrupt>
+  10:	10 c0       	rjmp	.+32     	; 0x32 <__bad_interrupt>
+  12:	0f c0       	rjmp	.+30     	; 0x32 <__bad_interrupt>
+  14:	0e c0       	rjmp	.+28     	; 0x32 <__bad_interrupt>
+  16:	0d c0       	rjmp	.+26     	; 0x32 <__bad_interrupt>
+  18:	0c c0       	rjmp	.+24     	; 0x32 <__bad_interrupt>
+  1a:	0b c0       	rjmp	.+22     	; 0x32 <__bad_interrupt>
+  1c:	0a c0       	rjmp	.+20     	; 0x32 <__bad_interrupt>
+  1e:	09 c0       	rjmp	.+18     	; 0x32 <__bad_interrupt>
+  20:	08 c0       	rjmp	.+16     	; 0x32 <__bad_interrupt>
+
+00000022 <__ctors_end>:
+  22:	11 24       	eor	r1, r1
+  24:	1f be       	out	0x3f, r1	; 63
+  26:	cf e5       	ldi	r28, 0x5F	; 95
+  28:	d2 e0       	ldi	r29, 0x02	; 2
+  2a:	de bf       	out	0x3e, r29	; 62
+  2c:	cd bf       	out	0x3d, r28	; 61
+  2e:	1d d0       	rcall	.+58     	; 0x6a <main>
+  30:	3a c0       	rjmp	.+116    	; 0xa6 <_exit>
+
+00000032 <__bad_interrupt>:
+  32:	e6 cf       	rjmp	.-52     	; 0x0 <__vectors>
+
+00000034 <__vector_3>:
+ *
+ * @brief Interrupts for PB0 (PCINT8)
+ *
+ */
+ISR(PCINT1_vect)
+{
+  34:	1f 92       	push	r1
+  36:	0f 92       	push	r0
+  38:	0f b6       	in	r0, 0x3f	; 63
+  3a:	0f 92       	push	r0
+  3c:	11 24       	eor	r1, r1
+  3e:	2f 93       	push	r18
+  40:	8f 93       	push	r24
+  42:	9f 93       	push	r25
+	LED_ON;
+  44:	d8 9a       	sbi	0x1b, 0	; 27
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  46:	2f e3       	ldi	r18, 0x3F	; 63
+  48:	8d e0       	ldi	r24, 0x0D	; 13
+  4a:	93 e0       	ldi	r25, 0x03	; 3
+  4c:	21 50       	subi	r18, 0x01	; 1
+  4e:	80 40       	sbci	r24, 0x00	; 0
+  50:	90 40       	sbci	r25, 0x00	; 0
+  52:	e1 f7       	brne	.-8      	; 0x4c <__SREG__+0xd>
+  54:	00 c0       	rjmp	.+0      	; 0x56 <__SREG__+0x17>
+  56:	00 00       	nop
+	_delay_ms(1000);
+	LED_OFF;
+  58:	d8 98       	cbi	0x1b, 0	; 27
+}
+  5a:	9f 91       	pop	r25
+  5c:	8f 91       	pop	r24
+  5e:	2f 91       	pop	r18
+  60:	0f 90       	pop	r0
+  62:	0f be       	out	0x3f, r0	; 63
+  64:	0f 90       	pop	r0
+  66:	1f 90       	pop	r1
+  68:	18 95       	reti
+
+0000006a <main>:
+ *
+ */
+int main(void)
+{
+	// set PA0 output pin
+	DDRA = 0b00000001;
+  6a:	81 e0       	ldi	r24, 0x01	; 1
+  6c:	8a bb       	out	0x1a, r24	; 26
+	
+	// Set B1 as input
+	DDRB &= ~(1<<DDB1);
+  6e:	b9 98       	cbi	0x17, 1	; 23
+	
+	// Enable pin change interrupts
+	GIMSK = 0b00100000;
+  70:	90 e2       	ldi	r25, 0x20	; 32
+  72:	9b bf       	out	0x3b, r25	; 59
+
+	// Turn on interrupts on PIN B0
+	PCMSK1 = 0b00000001;
+  74:	80 bd       	out	0x20, r24	; 32
+	
+	// write to power reduction register and turn everything off
+	PRR = 0xFF;
+  76:	8f ef       	ldi	r24, 0xFF	; 255
+  78:	80 b9       	out	0x00, r24	; 0
+	
+	// set sleep mode
+	set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+  7a:	85 b7       	in	r24, 0x35	; 53
+  7c:	87 7e       	andi	r24, 0xE7	; 231
+  7e:	80 61       	ori	r24, 0x10	; 16
+  80:	85 bf       	out	0x35, r24	; 53
+	
+	// enable interrupts with global interrupt mask
+	sei();
+  82:	78 94       	sei
+  84:	2f eb       	ldi	r18, 0xBF	; 191
+  86:	87 e2       	ldi	r24, 0x27	; 39
+  88:	99 e0       	ldi	r25, 0x09	; 9
+  8a:	21 50       	subi	r18, 0x01	; 1
+  8c:	80 40       	sbci	r24, 0x00	; 0
+  8e:	90 40       	sbci	r25, 0x00	; 0
+  90:	e1 f7       	brne	.-8      	; 0x8a <main+0x20>
+  92:	00 c0       	rjmp	.+0      	; 0x94 <main+0x2a>
+  94:	00 00       	nop
+    {
+		// delay for 5 seconds so power consumption reading can be taken
+		_delay_ms(3000);
+		
+		// enable sleep, put CPU to sleep and disable sleep when processor wakes up
+		sleep_mode();
+  96:	85 b7       	in	r24, 0x35	; 53
+  98:	80 62       	ori	r24, 0x20	; 32
+  9a:	85 bf       	out	0x35, r24	; 53
+  9c:	88 95       	sleep
+  9e:	85 b7       	in	r24, 0x35	; 53
+  a0:	8f 7d       	andi	r24, 0xDF	; 223
+  a2:	85 bf       	out	0x35, r24	; 53
+    }
+  a4:	ef cf       	rjmp	.-34     	; 0x84 <main+0x1a>
+
+000000a6 <_exit>:
+  a6:	f8 94       	cli
+
+000000a8 <__stop_program>:
+  a8:	ff cf       	rjmp	.-2      	; 0xa8 <__stop_program>
