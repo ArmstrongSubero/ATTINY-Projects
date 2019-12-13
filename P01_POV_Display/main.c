@@ -1,18 +1,18 @@
 /*
  * File: Main.c
  * Author: Armstrong Subero
- * PIC: ATTINY85 w/Int OSC @ 1 MHz, 3.7 v
+ * PIC: ATTINY84A w/Int OSC @ 1 MHz, 3.7 v
  * Program: P01_POV
  * Compiler: (AVR GCC 4.9.2, AtmelStudio 7)
  * Program Version: 1.0
  *                
  *                
- * Program Description: This Program Allows ATTINY85 to use PORTA for a POV display
+ * Program Description: This Program Allows ATTINY84A to use PORTA for a POV display
  * 
  * Hardware Description: Eight LEDs are connected via 150R resistors to PORTA
  *
  * Modified From: PIC18F2685 version written in MikroC by Andrew Hazelden
- *                modified to fit on ATTINY85
+ *                modified to fit on ATTINY84A
  *                      
  * Created December 12th, 2019, 05:00 PM
  */
