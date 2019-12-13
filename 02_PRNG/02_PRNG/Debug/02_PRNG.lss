@@ -1,0 +1,146 @@
+
+02_PRNG.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000092  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000002  00800060  00000092  00000106  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  00000108  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000138  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  00000174  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   00000579  00000000  00000000  00000194  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000004d7  00000000  00000000  0000070d  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000022b  00000000  00000000  00000be4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  00000e10  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    0000030c  00000000  00000000  00000e34  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_ranges 00000010  00000000  00000000  00001140  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
+   2:	22 c0       	rjmp	.+68     	; 0x48 <__bad_interrupt>
+   4:	21 c0       	rjmp	.+66     	; 0x48 <__bad_interrupt>
+   6:	20 c0       	rjmp	.+64     	; 0x48 <__bad_interrupt>
+   8:	1f c0       	rjmp	.+62     	; 0x48 <__bad_interrupt>
+   a:	1e c0       	rjmp	.+60     	; 0x48 <__bad_interrupt>
+   c:	1d c0       	rjmp	.+58     	; 0x48 <__bad_interrupt>
+   e:	1c c0       	rjmp	.+56     	; 0x48 <__bad_interrupt>
+  10:	1b c0       	rjmp	.+54     	; 0x48 <__bad_interrupt>
+  12:	1a c0       	rjmp	.+52     	; 0x48 <__bad_interrupt>
+  14:	19 c0       	rjmp	.+50     	; 0x48 <__bad_interrupt>
+  16:	18 c0       	rjmp	.+48     	; 0x48 <__bad_interrupt>
+  18:	17 c0       	rjmp	.+46     	; 0x48 <__bad_interrupt>
+  1a:	16 c0       	rjmp	.+44     	; 0x48 <__bad_interrupt>
+  1c:	15 c0       	rjmp	.+42     	; 0x48 <__bad_interrupt>
+  1e:	14 c0       	rjmp	.+40     	; 0x48 <__bad_interrupt>
+  20:	13 c0       	rjmp	.+38     	; 0x48 <__bad_interrupt>
+
+00000022 <__ctors_end>:
+  22:	11 24       	eor	r1, r1
+  24:	1f be       	out	0x3f, r1	; 63
+  26:	cf e5       	ldi	r28, 0x5F	; 95
+  28:	d2 e0       	ldi	r29, 0x02	; 2
+  2a:	de bf       	out	0x3e, r29	; 62
+  2c:	cd bf       	out	0x3d, r28	; 61
+
+0000002e <__do_copy_data>:
+  2e:	10 e0       	ldi	r17, 0x00	; 0
+  30:	a0 e6       	ldi	r26, 0x60	; 96
+  32:	b0 e0       	ldi	r27, 0x00	; 0
+  34:	e2 e9       	ldi	r30, 0x92	; 146
+  36:	f0 e0       	ldi	r31, 0x00	; 0
+  38:	02 c0       	rjmp	.+4      	; 0x3e <__SP_H__>
+  3a:	05 90       	lpm	r0, Z+
+  3c:	0d 92       	st	X+, r0
+  3e:	a2 36       	cpi	r26, 0x62	; 98
+  40:	b1 07       	cpc	r27, r17
+  42:	d9 f7       	brne	.-10     	; 0x3a <__do_copy_data+0xc>
+  44:	02 d0       	rcall	.+4      	; 0x4a <main>
+  46:	23 c0       	rjmp	.+70     	; 0x8e <_exit>
+
+00000048 <__bad_interrupt>:
+  48:	db cf       	rjmp	.-74     	; 0x0 <__vectors>
+
+0000004a <main>:
+ *
+ */
+int main(void)
+{
+	// set PA0 output pin
+	DDRA |= (1<<DDA0);
+  4a:	d0 9a       	sbi	0x1a, 0	; 26
+	
+	// Set B1 as input
+	DDRB &= ~(1<<DDB1);
+  4c:	b9 98       	cbi	0x17, 1	; 23
+
+
+static uint16_t prng_lfsr16(void)
+{
+	static uint16_t cnt16 = LFSR_SEED;
+	return (cnt16 = (cnt16 >> 1) ^ (-(cnt16 & 1) & 0xB400));
+  4e:	20 91 60 00 	lds	r18, 0x0060	; 0x800060 <__data_start>
+  52:	30 91 61 00 	lds	r19, 0x0061	; 0x800061 <__data_start+0x1>
+  56:	c9 01       	movw	r24, r18
+  58:	81 70       	andi	r24, 0x01	; 1
+  5a:	99 27       	eor	r25, r25
+  5c:	91 95       	neg	r25
+  5e:	81 95       	neg	r24
+  60:	91 09       	sbc	r25, r1
+  62:	88 27       	eor	r24, r24
+  64:	94 7b       	andi	r25, 0xB4	; 180
+  66:	36 95       	lsr	r19
+  68:	27 95       	ror	r18
+  6a:	82 27       	eor	r24, r18
+  6c:	93 27       	eor	r25, r19
+  6e:	90 93 61 00 	sts	0x0061, r25	; 0x800061 <__data_start+0x1>
+  72:	80 93 60 00 	sts	0x0060, r24	; 0x800060 <__data_start>
+	// Set B1 as input
+	DDRB &= ~(1<<DDB1);
+	
+	while (1) 
+    {
+		 if (prng_lfsr16() & 1)  
+  76:	80 ff       	sbrs	r24, 0
+  78:	02 c0       	rjmp	.+4      	; 0x7e <main+0x34>
+		 {
+			 LED_ON;
+  7a:	d8 9a       	sbi	0x1b, 0	; 27
+  7c:	01 c0       	rjmp	.+2      	; 0x80 <main+0x36>
+		 }
+		 
+		 else                   
+		 {
+			 LED_OFF;
+  7e:	d8 98       	cbi	0x1b, 0	; 27
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  80:	8f e7       	ldi	r24, 0x7F	; 127
+  82:	9e e3       	ldi	r25, 0x3E	; 62
+  84:	01 97       	sbiw	r24, 0x01	; 1
+  86:	f1 f7       	brne	.-4      	; 0x84 <main+0x3a>
+  88:	00 c0       	rjmp	.+0      	; 0x8a <main+0x40>
+  8a:	00 00       	nop
+  8c:	e0 cf       	rjmp	.-64     	; 0x4e <main+0x4>
+
+0000008e <_exit>:
+  8e:	f8 94       	cli
+
+00000090 <__stop_program>:
+  90:	ff cf       	rjmp	.-2      	; 0x90 <__stop_program>
