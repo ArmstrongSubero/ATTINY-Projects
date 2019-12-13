@@ -39,6 +39,11 @@
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 
+/*!
+ *
+ * @brief This function plays an alarm
+ *
+ */
 void play_alarm()
 {
 	for (uint8_t i=0; i<10; i++)
