@@ -1,0 +1,150 @@
+
+08_HW_PWM.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         0000007c  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000000  00800060  00800060  000000d0  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .comment      00000030  00000000  00000000  000000d0  2**0
+                  CONTENTS, READONLY
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000100  2**2
+                  CONTENTS, READONLY
+  4 .debug_aranges 00000020  00000000  00000000  0000013c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  5 .debug_info   0000054e  00000000  00000000  0000015c  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  6 .debug_abbrev 000004b9  00000000  00000000  000006aa  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  7 .debug_line   0000027a  00000000  00000000  00000b63  2**0
+                  CONTENTS, READONLY, DEBUGGING
+  8 .debug_frame  00000024  00000000  00000000  00000de0  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  9 .debug_str    00000303  00000000  00000000  00000e04  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 10 .debug_loc    0000001f  00000000  00000000  00001107  2**0
+                  CONTENTS, READONLY, DEBUGGING
+ 11 .debug_ranges 00000010  00000000  00000000  00001126  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	10 c0       	rjmp	.+32     	; 0x22 <__ctors_end>
+   2:	17 c0       	rjmp	.+46     	; 0x32 <__bad_interrupt>
+   4:	16 c0       	rjmp	.+44     	; 0x32 <__bad_interrupt>
+   6:	15 c0       	rjmp	.+42     	; 0x32 <__bad_interrupt>
+   8:	14 c0       	rjmp	.+40     	; 0x32 <__bad_interrupt>
+   a:	13 c0       	rjmp	.+38     	; 0x32 <__bad_interrupt>
+   c:	12 c0       	rjmp	.+36     	; 0x32 <__bad_interrupt>
+   e:	11 c0       	rjmp	.+34     	; 0x32 <__bad_interrupt>
+  10:	10 c0       	rjmp	.+32     	; 0x32 <__bad_interrupt>
+  12:	0f c0       	rjmp	.+30     	; 0x32 <__bad_interrupt>
+  14:	0e c0       	rjmp	.+28     	; 0x32 <__bad_interrupt>
+  16:	0d c0       	rjmp	.+26     	; 0x32 <__bad_interrupt>
+  18:	0c c0       	rjmp	.+24     	; 0x32 <__bad_interrupt>
+  1a:	0b c0       	rjmp	.+22     	; 0x32 <__bad_interrupt>
+  1c:	0a c0       	rjmp	.+20     	; 0x32 <__bad_interrupt>
+  1e:	09 c0       	rjmp	.+18     	; 0x32 <__bad_interrupt>
+  20:	08 c0       	rjmp	.+16     	; 0x32 <__bad_interrupt>
+
+00000022 <__ctors_end>:
+  22:	11 24       	eor	r1, r1
+  24:	1f be       	out	0x3f, r1	; 63
+  26:	cf e5       	ldi	r28, 0x5F	; 95
+  28:	d2 e0       	ldi	r29, 0x02	; 2
+  2a:	de bf       	out	0x3e, r29	; 62
+  2c:	cd bf       	out	0x3d, r28	; 61
+  2e:	02 d0       	rcall	.+4      	; 0x34 <main>
+  30:	23 c0       	rjmp	.+70     	; 0x78 <_exit>
+
+00000032 <__bad_interrupt>:
+  32:	e6 cf       	rjmp	.-52     	; 0x0 <__vectors>
+
+00000034 <main>:
+ *
+ */
+int main(void)
+{
+	/* PWM PINS as outputs.., */
+	DDRA |= _BV(DD7) | _BV(DD6) | _BV(DD5);
+  34:	8a b3       	in	r24, 0x1a	; 26
+  36:	80 6e       	ori	r24, 0xE0	; 224
+  38:	8a bb       	out	0x1a, r24	; 26
+	DDRB |= _BV(DD2);
+  3a:	ba 9a       	sbi	0x17, 2	; 23
+	PORTA = 0;
+  3c:	1b ba       	out	0x1b, r1	; 27
+	
+    /* Timer 0, on, PWM with both PWM outputs. */
+    TCCR0A |= _BV(COM0A1) | _BV(COM0B1) | _BV(WGM00);
+  3e:	80 b7       	in	r24, 0x30	; 48
+  40:	81 6a       	ori	r24, 0xA1	; 161
+  42:	80 bf       	out	0x30, r24	; 48
+	TCCR0B |= _BV(CS01); /* CLK/8 */
+  44:	83 b7       	in	r24, 0x33	; 51
+  46:	82 60       	ori	r24, 0x02	; 2
+  48:	83 bf       	out	0x33, r24	; 51
+	
+	
+	 /* Timer 1, on, 8-bit, PWM with both PWM outputs. */
+	 TCCR1A |= _BV(COM1A1) | _BV(COM1B1) | _BV(WGM10);
+  4a:	8f b5       	in	r24, 0x2f	; 47
+  4c:	81 6a       	ori	r24, 0xA1	; 161
+  4e:	8f bd       	out	0x2f, r24	; 47
+	 TCCR1B |= _BV(CS11); /* CLK/8 */
+  50:	8e b5       	in	r24, 0x2e	; 46
+  52:	82 60       	ori	r24, 0x02	; 2
+  54:	8e bd       	out	0x2e, r24	; 46
+	
+	
+	while (1) 
+    {
+	  for(uint8_t duty = 0; duty<= 255; duty++)
+  56:	80 e0       	ldi	r24, 0x00	; 0
+	  {
+	   OCR0A = duty;
+  58:	86 bf       	out	0x36, r24	; 54
+	   OCR0B = duty;
+  5a:	8c bf       	out	0x3c, r24	; 60
+	   OCR1A = duty;
+  5c:	28 2f       	mov	r18, r24
+  5e:	30 e0       	ldi	r19, 0x00	; 0
+  60:	3b bd       	out	0x2b, r19	; 43
+  62:	2a bd       	out	0x2a, r18	; 42
+	   OCR1B = duty;
+  64:	39 bd       	out	0x29, r19	; 41
+  66:	28 bd       	out	0x28, r18	; 40
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
+
+	__builtin_avr_delay_cycles(__ticks_dc);
+  68:	e7 ea       	ldi	r30, 0xA7	; 167
+  6a:	f1 e6       	ldi	r31, 0x61	; 97
+  6c:	31 97       	sbiw	r30, 0x01	; 1
+  6e:	f1 f7       	brne	.-4      	; 0x6c <__SREG__+0x2d>
+  70:	00 c0       	rjmp	.+0      	; 0x72 <__SREG__+0x33>
+  72:	00 00       	nop
+	 TCCR1B |= _BV(CS11); /* CLK/8 */
+	
+	
+	while (1) 
+    {
+	  for(uint8_t duty = 0; duty<= 255; duty++)
+  74:	8f 5f       	subi	r24, 0xFF	; 255
+	   OCR0A = duty;
+	   OCR0B = duty;
+	   OCR1A = duty;
+	   OCR1B = duty;
+	   _delay_ms(100);
+	  }
+  76:	f0 cf       	rjmp	.-32     	; 0x58 <__SREG__+0x19>
+
+00000078 <_exit>:
+  78:	f8 94       	cli
+
+0000007a <__stop_program>:
+  7a:	ff cf       	rjmp	.-2      	; 0x7a <__stop_program>
